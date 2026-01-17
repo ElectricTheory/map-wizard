@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function() {
+  /* widget controller */
+  var c = this;
+  c.activeMap = c.data.activeMap;
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.map-grid {&#13;
+  display: grid; &#13;
+  max-width: 500px;&#13;
+}&#13;
+&#13;
+.map-tile {&#13;
+  aspect-ratio: 1 / 1;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>mw-map-editor</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+
+    const {
+        dimensions
+    } = scope.c.activeMap;
+
+    const cols = "repeat(" + dimensions.x + ", 1fr)";
+    const rows = "repeat(" + dimensions.y + ", 1fr)";
+
+	console.log(cols)
+	console.log(rows)
+
+    angular.element('.map-grid').css('background-color', 'pink');
+    angular.element('.map-grid').css('grid-template-columns', cols);
+    angular.element('.map-grid').css('grid-template-row', "repeat(10, 1fr)");
+
+}]]></link>
+        <name>Map Editor</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+
+    const mapGr = new GlideRecord('x_91469_map_wizard_map');
+
+    if (mapGr.get('1d0159e093a232108852f5befaba1063')) {
+		
+		const activeMap = {};
+		const xVal = mapGr.getValue('dimension_x');
+		const yVal = mapGr.getValue('dimension_y');
+
+		activeMap.label = mapGr.getValue('label');
+		activeMap.dimensions = {};
+		activeMap.dimensions.x = xVal;
+		activeMap.dimensions.y = yVal;
+		activeMap.total = xVal * yVal;
+		activeMap.tiles = [];
+
+		const tileTotal = 100;
+		console.log(tileTotal)
+
+		for (let i = 0; i < tileTotal; i++) {
+			
+			// total row/col 
+			const xRange = xVal - 1;
+			const yRange = yVal - 1;
+
+			// inc row/col
+			let xInc = 0;
+			let yInc = 0; 
+
+			const tile = {};
+			
+			//console.log('count: ' + i + '||' + 'xInc' + xInc + '||' + 'yInc' + yInc) 
+			 console.log(i)
+
+		}
+
+
+		console.log(activeMap)
+
+		data.activeMap = activeMap;
+
+    };
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-16 18:27:54</sys_created_on>
+        <sys_id>281c0528936232108852f5befaba10b2</sys_id>
+        <sys_mod_count>45</sys_mod_count>
+        <sys_name>Map Editor</sys_name>
+        <sys_package display_value="Map Wizard" source="x_91469_map_wizard">3ab70dec932232108852f5befaba10b8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Map Wizard">3ab70dec932232108852f5befaba10b8</sys_scope>
+        <sys_update_name>sp_widget_281c0528936232108852f5befaba10b2</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-17 01:52:30</sys_updated_on>
+        <template><![CDATA[<div class="mw-map-editor">
+  <span>{{ c.activeMap.total }}</span>
+  <div class="map-grid">
+    <div class="map-tile" ng-repeat="tile in c.activeMap.total">1</div>
+	
+  </div>
+
+</div>]]></template>
+    </sp_widget>
+</record_update>

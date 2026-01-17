@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+    <sys_security_acl action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <admin_overrides>true</admin_overrides>
+        <advanced>false</advanced>
+        <applies_to/>
+        <condition/>
+        <controlled_by_refs/>
+        <decision_type>allow</decision_type>
+        <description/>
+        <local_or_existing>Local</local_or_existing>
+        <name>x_91469_map_wizard_map</name>
+        <operation display_value="delete">delete</operation>
+        <script/>
+        <security_attribute/>
+        <sys_class_name>sys_security_acl</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-16 18:24:51</sys_created_on>
+        <sys_id>b67b01e4936232108852f5befaba1014</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_91469_map_wizard_map</sys_name>
+        <sys_package display_value="Map Wizard" source="x_91469_map_wizard">3ab70dec932232108852f5befaba10b8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Map Wizard">3ab70dec932232108852f5befaba10b8</sys_scope>
+        <sys_update_name>sys_security_acl_b67b01e4936232108852f5befaba1014</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-16 18:24:51</sys_updated_on>
+        <type display_value="record">record</type>
+    </sys_security_acl>
+</record_update>
