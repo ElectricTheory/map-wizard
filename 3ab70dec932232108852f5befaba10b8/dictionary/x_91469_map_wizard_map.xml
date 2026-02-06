@@ -2,6 +2,7 @@
     <element db_object_id="697b4da4936232108852f5befaba108a" label="Map" max_length="40" name="x_91469_map_wizard_map" type="collection">
         <element label="Y" max_length="40" name="dimension_y" type="integer"/>
         <element default="javascript:current.getTableName();" label="Class" max_length="80" name="sys_class_name" type="sys_class_name"/>
+        <element label="Config" max_length="100000" name="config" type="string"/>
         <element label="X" max_length="40" name="dimension_x" type="integer"/>
         <element attributes="edge_encryption_enabled=true,ignore_filter_on_new=true,ts_weight=50" default="javascript:getNextObjNumberPadded();" display="true" dynamic_default_value="fdcb83a85f220100a9ad2572f2b4773c" label="Map ID" max_length="40" name="map_id" read_only="true" type="string" use_dynamic_default="true"/>
         <element label="Label" mandatory="true" max_length="40" name="label" type="string"/>

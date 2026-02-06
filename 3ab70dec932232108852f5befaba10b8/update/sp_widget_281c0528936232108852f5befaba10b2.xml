@@ -1,19 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller=function() {
-  /* widget controller */
-  var c = this;
-  c.activeMap = c.data.activeMap;
+        <client_script><![CDATA[api.controller = function($scope) {
+    /* widget controller */
+    var c = this;
+    c.activeMap = c.data.activeMap;
+	console.log(c.activeMap)
+
+
+
+    $scope.map = {
+        displayValue: c.data.map.name || '', // Set the display value as the user's name or empty string
+        value: c.data.map.sys_id || '', // Set the sys_id as the value or empty string
+        name: 'map'
+    };
+
+	c.toggleSelect = function(id) {
+		c.activeMap.grid.map(function(tile) {
+
+			if (tile.id === id) {
+				tile.selected = !tile.selected;
+			}
+
+			return tile;
+		});
+	}
+
+    c.setStyles = function(tile) {
+
+        return {
+            'background-image': 'url(' + tile.bg_img + ')',
+            'border': 'solid ' + tile.border_c + ' 1px'
+        };
+
+    };
+
+    c.setDimensions = function(x, y) {
+
+        const cols = "repeat(" + x + ", 1fr)";
+        const rows = "repeat(" + y + ", 1fr)";
+
+        return {
+            'grid-template-columns': cols,
+			'grid-template-rows': rows
+        };
+
+    };
+
+    /** 
+    const cols = "repeat(" + dimensions.x + ", 1fr)";
+    const rows = "repeat(" + dimensions.y + ", 1fr)";
+
+    angular.element('.map-grid').css('grid-template-columns', cols);
+    angular.element('.map-grid').css('grid-template-row', rows);
+**/
+
+    $scope.$on("field.change", function(evt, parms) {
+
+        if (parms.field.name === 'map') {
+            c.getMap(parms.field.value);
+        }
+    });
+
+    c.getMap = (newMap) => {
+
+        c.data.action = "get_map";
+        c.data.new_map = newMap;
+        c.activeMap = null;
+
+        c.server.update().then((response) => {
+
+            c.activeMap = response.active_map;
+        })
+
+    }
+
+
 };]]></client_script>
         <controller_as>c</controller_as>
         <css>.map-grid {&#13;
   display: grid; &#13;
   max-width: 500px;&#13;
+  gap: 1px;&#13;
 }&#13;
 &#13;
 .map-tile {&#13;
   aspect-ratio: 1 / 1;&#13;
+  &amp;:hover {&#13;
+   border: solid white 1px !important;&#13;
+  }&#13;
+}&#13;
+&#13;
+.selected {&#13;
+  border: solid pink 1px !important;&#13;
 }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
@@ -24,20 +103,13 @@
         <id>mw-map-editor</id>
         <internal>false</internal>
         <link><![CDATA[function link(scope, element, attrs, controller) {
-
+	console.log('update link!!!!')
     const {
-        dimensions
+        dimensions,
+        grid
     } = scope.c.activeMap;
 
-    const cols = "repeat(" + dimensions.x + ", 1fr)";
-    const rows = "repeat(" + dimensions.y + ", 1fr)";
 
-	console.log(cols)
-	console.log(rows)
-
-    angular.element('.map-grid').css('background-color', 'pink');
-    angular.element('.map-grid').css('grid-template-columns', cols);
-    angular.element('.map-grid').css('grid-template-row', "repeat(10, 1fr)");
 
 }]]></link>
         <name>Map Editor</name>
@@ -46,47 +118,51 @@
         <roles/>
         <script><![CDATA[(function() {
 
+    data.map = "";
+
     const mapGr = new GlideRecord('x_91469_map_wizard_map');
 
     if (mapGr.get('1d0159e093a232108852f5befaba1063')) {
-		
-		const activeMap = {};
-		const xVal = mapGr.getValue('dimension_x');
-		const yVal = mapGr.getValue('dimension_y');
 
-		activeMap.label = mapGr.getValue('label');
-		activeMap.dimensions = {};
-		activeMap.dimensions.x = xVal;
-		activeMap.dimensions.y = yVal;
-		activeMap.total = xVal * yVal;
-		activeMap.tiles = [];
+        const activeMap = {};
+        const xVal = mapGr.getValue('dimension_x');
+        const yVal = mapGr.getValue('dimension_y');
 
-		const tileTotal = 100;
-		console.log(tileTotal)
+        activeMap.label = mapGr.getValue('label');
+        activeMap.dimensions = {};
+        activeMap.dimensions.x = xVal;
+        activeMap.dimensions.y = yVal;
 
-		for (let i = 0; i < tileTotal; i++) {
-			
-			// total row/col 
-			const xRange = xVal - 1;
-			const yRange = yVal - 1;
+        const grid = new x_91469_map_wizard.MapGrid(xVal, yVal);
+        activeMap.grid = grid.cells;
 
-			// inc row/col
-			let xInc = 0;
-			let yInc = 0; 
-
-			const tile = {};
-			
-			//console.log('count: ' + i + '||' + 'xInc' + xInc + '||' + 'yInc' + yInc) 
-			 console.log(i)
-
-		}
-
-
-		console.log(activeMap)
-
-		data.activeMap = activeMap;
+        data.activeMap = activeMap;
 
     };
+
+    if (input && input.action === "get_map") {
+
+        const mapGr = new GlideRecord('x_91469_map_wizard_map');
+
+        if (mapGr.get(input.new_map)) {
+
+            const active_map = {};
+            const xVal = mapGr.getValue('dimension_x');
+            const yVal = mapGr.getValue('dimension_y');
+
+            active_map.label = mapGr.getValue('label');
+            active_map.dimensions = {};
+            active_map.dimensions.x = xVal;
+            active_map.dimensions.y = yVal;
+
+            const grid = new x_91469_map_wizard.MapGrid(xVal, yVal);
+            active_map.grid = grid.cells;
+
+            data.active_map = active_map;
+        }
+
+
+    }
 
 })();]]></script>
         <servicenow>false</servicenow>
@@ -94,19 +170,28 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-01-16 18:27:54</sys_created_on>
         <sys_id>281c0528936232108852f5befaba10b2</sys_id>
-        <sys_mod_count>45</sys_mod_count>
+        <sys_mod_count>127</sys_mod_count>
         <sys_name>Map Editor</sys_name>
         <sys_package display_value="Map Wizard" source="x_91469_map_wizard">3ab70dec932232108852f5befaba10b8</sys_package>
         <sys_policy/>
         <sys_scope display_value="Map Wizard">3ab70dec932232108852f5befaba10b8</sys_scope>
         <sys_update_name>sp_widget_281c0528936232108852f5befaba10b2</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-01-17 01:52:30</sys_updated_on>
+        <sys_updated_on>2026-02-03 20:08:28</sys_updated_on>
         <template><![CDATA[<div class="mw-map-editor">
-  <span>{{ c.activeMap.total }}</span>
-  <div class="map-grid">
-    <div class="map-tile" ng-repeat="tile in c.activeMap.total">1</div>
-	
+
+  <span>{{ c.selected }}</span>
+  <sn-record-picker
+                    field="map" 
+                    table="'x_91469_map_wizard_map'" 
+                    display-field="'label'" 
+                    value-field="'sys_id'" 
+                    search-fields="'name'" 
+                    page-size="100">
+  </sn-record-picker>
+
+  <div class="map-grid" ng-style="c.setDimensions(c.activeMap.dimensions.x, c.activeMap.dimensions.y)">
+    <div id="{{ tile.id }}" class="map-tile pointer" ng-class="tile.selected ? 'selected' : ''" ng-repeat="tile in c.activeMap.grid track by tile.id" ng-style="::c.setStyles(tile)" ng-click="c.toggleSelect(tile.id)">{{tile.x}},{{tile.y}}</div>
   </div>
 
 </div>]]></template>

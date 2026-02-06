@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_91469_map_wizard.MapGrid</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>MapGrid</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var MapGrid = Class.create();
+MapGrid.prototype = {
+
+      initialize: function(width, height) {
+        this.width = width;
+        this.height = height;
+        this.cells = [];
+
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                this.cells.push({
+                    x: x,
+                    y: y,
+					selected: false,
+					bg_img: "x_91469_map_wizard.black_bg.png",
+					border_c: "#0000FF",
+					id: 'mp_' + x + "_" + y
+                });
+            }
+        }
+    },
+
+    getCell: function(x, y) {
+        return this.cells.find(function(cell) {
+            return cell.x === x && cell.y === y;
+        });
+    },
+
+    setCellValue: function(x, y, att, val) {
+        var cell = this.getCell(x, y);
+        if (cell) {
+            cell[att] = val;
+        }
+        return cell;
+    },
+
+
+    type: 'MapGrid'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-01-19 15:08:19</sys_created_on>
+        <sys_id>16eafb99936eb6108852f5befaba1078</sys_id>
+        <sys_mod_count>13</sys_mod_count>
+        <sys_name>MapGrid</sys_name>
+        <sys_package display_value="Map Wizard" source="x_91469_map_wizard">3ab70dec932232108852f5befaba10b8</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Map Wizard">3ab70dec932232108852f5befaba10b8</sys_scope>
+        <sys_update_name>sys_script_include_16eafb99936eb6108852f5befaba1078</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-01-19 17:13:37</sys_updated_on>
+    </sys_script_include>
+</record_update>
